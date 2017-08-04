@@ -29,11 +29,10 @@ class IndexController extends pm_Controller_Action
 
     public function indexAction()
     {
-
-        if(pm_Settings::get('apikey')){
+        if (pm_Settings::get('apikey')) {
             $account = UptimeRobotAPI::fetchUptimeRobotAccount(pm_Settings::get('apikey'));
 
-            if ($account->stat == 'ok'){
+            if ($account->stat == 'ok') {
                 $this->_forward('overview');
                 return;
             }
@@ -49,23 +48,32 @@ class IndexController extends pm_Controller_Action
     {
         $apiKey = pm_Settings::get('apikey') ? pm_Settings::get('apikey') : '';
         $this->view->apikeyForm = new pm_Form_Simple();
-        $this->view->apikeyForm->addElement('text', 'apikey', [ 'label' => pm_Locale::lmsg('setupApiKeyInputLabel'), 'required' => true, 'value' => $apiKey ]);
-        $this->view->apikeyForm->addControlButtons(['cancelHidden' => true, 'sendTitle' => pm_Locale::lmsg('setupApiKeySaveButton')]);
+        $this->view->apikeyForm->addElement('text', 'apikey', [
+            'label' => pm_Locale::lmsg('setupApiKeyInputLabel'),
+            'required' => true,
+            'value' => $apiKey 
+        ]);
+        $this->view->apikeyForm->addControlButtons([
+            'cancelHidden' => true,
+            'sendTitle' => pm_Locale::lmsg('setupApiKeySaveButton')
+        ]);
 
         if ($this->getRequest()->isPost() && $this->view->apikeyForm->isValid($this->getRequest()->getPost())) {
             $apikey = $this->view->apikeyForm->getValue('apikey');
             pm_Settings::set('apikey', trim($apikey));
 
-            if ($apikey){
+            if ($apikey) {
                 $account = UptimeRobotAPI::fetchUptimeRobotAccount($apikey);
-                if ($account->stat == 'ok'){
+                if ($account->stat == 'ok') {
                     $this->_status->addMessage('info', pm_Locale::lmsg('setupApiKeySaved'));
                 } else {
                     $this->_status->addError(pm_Locale::lmsg('setupApiKeyInvalid').json_encode($account));
                 }
             }
             
-            $this->_helper->json(['redirect' => pm_Context::getBaseUrl()]);
+            $this->_helper->json([
+                'redirect' => pm_Context::getBaseUrl()
+            ]);
         }
     }
 
@@ -73,40 +81,72 @@ class IndexController extends pm_Controller_Action
     {
         $apiKey = pm_Settings::get('apikey') ? pm_Settings::get('apikey') : '';
         $this->view->apikeyForm = new pm_Form_Simple();
-        $this->view->apikeyForm->addElement('text', 'apikey', [ 'label' => 'API-Key', 'value' => $apiKey ]);
-        $this->view->apikeyForm->addControlButtons(['cancelHidden' => true, 'sendTitle' => 'Save']);
+        $this->view->apikeyForm->addElement('text', 'apikey', [
+            'label' => 'API-Key',
+            'value' => $apiKey 
+        ]);
+        $this->view->apikeyForm->addControlButtons([
+            'cancelHidden' => true,
+            'sendTitle' => 'Save'
+        ]);
        
         if ($this->getRequest()->isPost() && $this->view->apikeyForm->isValid($this->getRequest()->getPost())) {
             $apikey = $this->view->apikeyForm->getValue('apikey');
             pm_Settings::set('apikey', trim($apikey));
 
-            if ($apikey){
+            if ($apikey) {
                 $account = UptimeRobotAPI::fetchUptimeRobotAccount($apikey);
-                if ($account->stat == 'ok'){
+                if ($account->stat == 'ok') {
                     $this->_status->addMessage('info', pm_Locale::lmsg('setupApiKeySaved'));
                 } else {
                     $this->_status->addError(pm_Locale::lmsg('setupApiKeyInvalid'));
                 }
             }
             
-            $this->_helper->json(['redirect' => pm_Context::getBaseUrl()]);
+            $this->_helper->json([
+                'redirect' => pm_Context::getBaseUrl()
+            ]);
             return;
         }
 
         $account = UptimeRobotAPI::fetchUptimeRobotAccountDetails($apiKey);
         $this->view->accountForm = new pm_Form_Simple();
-    	$this->view->accountForm->addElement('text', 'email', ['label' => pm_Locale::lmsg('settingsMail'), 'value' => $account->email , 'readonly' => true ]);
-    	$this->view->accountForm->addElement('text', 'limit', ['label' => pm_Locale::lmsg('settingsMonitorLimit'), 'value' => $account->monitor_limit , 'readonly' => true ]);
-    	$this->view->accountForm->addElement('text', 'interval', ['label' => pm_Locale::lmsg('settingsMonitorInterval'), 'value' => $account->monitor_interval , 'readonly' => true ]);
-    	$this->view->accountForm->addElement('text', 'interval', ['label' => pm_Locale::lmsg('settingsUpMonitor'), 'value' => $account->up_monitors , 'readonly' => true ]);
-    	$this->view->accountForm->addElement('text', 'interval', ['label' => pm_Locale::lmsg('settingsDownMonitor'), 'value' => $account->down_monitors , 'readonly' => true ]);
-    	$this->view->accountForm->addElement('text', 'interval', ['label' => pm_Locale::lmsg('settingsPausedMonitor'), 'value' => $account->paused_monitors , 'readonly' => true ]);
+    	$this->view->accountForm->addElement('text', 'email', [
+            'label' => pm_Locale::lmsg('settingsMail'),
+            'value' => $account->email ,
+            'readonly' => true
+        ]);
+    	$this->view->accountForm->addElement('text', 'limit', [
+            'label' => pm_Locale::lmsg('settingsMonitorLimit'),
+            'value' => $account->monitor_limit,
+            'readonly' => true 
+        ]);
+    	$this->view->accountForm->addElement('text', 'interval', [
+            'label' => pm_Locale::lmsg('settingsMonitorInterval'),
+            'value' => $account->monitor_interval,
+            'readonly' => true
+        ]);
+    	$this->view->accountForm->addElement('text', 'interval', [
+            'label' => pm_Locale::lmsg('settingsUpMonitor'),
+            'value' => $account->up_monitors,
+            'readonly' => true
+        ]);
+    	$this->view->accountForm->addElement('text', 'interval', [
+            'label' => pm_Locale::lmsg('settingsDownMonitor'),
+            'value' => $account->down_monitors,
+            'readonly' => true
+        ]);
+    	$this->view->accountForm->addElement('text', 'interval', [
+            'label' => pm_Locale::lmsg('settingsPausedMonitor'),
+            'value' => $account->paused_monitors,
+            'readonly' => true 
+        ]);
     }
 
     public function overviewAction()
     {
         $timespan = self::DEFAULT_TIMESPAN;
-        if ($this->getRequest()->getQuery('timespan')){
+        if ($this->getRequest()->getQuery('timespan')) {
             $timespan = intval($this->getRequest()->getQuery('timespan'));
         }
 
@@ -168,26 +208,22 @@ class IndexController extends pm_Controller_Action
                 'searchable' => false,
                 'noEscape' => true
             ], 
-            
             'column-2' => [
                 'title' =>  pm_Locale::lmsg('overviewEventColMonitor'),
                 'sortable' => true,
                 'searchable' => false,
                 'noEscape' => true
             ], 
-            
             'column-3' => [
                 'title' =>  pm_Locale::lmsg('overviewEventColDateTime'),
                 'sortable' => true,
                 'searchable' => false
             ],
-
             'column-4' => [
                 'title' =>  pm_Locale::lmsg('overviewEventColReason'), 
                 'sortable' => true,
                 'searchable' => false
             ],
-
             'column-5' => [
                 'title' => pm_Locale::lmsg('overviewEventColDuration'),
                 'sortable' => true,
@@ -341,7 +377,7 @@ class IndexController extends pm_Controller_Action
             $textsOnline = '';
             foreach ($monitors as &$monitor) {
                 foreach ($monitor->logs as &$log) {
-                    if($currentDay == date('Y-m-d', $log->datetime) && $log->type == 1){
+                    if ($currentDay == date('Y-m-d', $log->datetime) && $log->type == 1) {
                         $duration += ($log->duration/60/60); //seconds => hours
                         $textOffline .= $monitor->url.': '.($this->_getHTMLByDuration($log->duration)).'<br>';
                     }
@@ -420,7 +456,7 @@ class IndexController extends pm_Controller_Action
                 $durations = $this->_getOverallUptime($monitor, $period);
 
                 // Init global uptime for period
-                if(!$globalUptimes[$period]){
+                if (!$globalUptimes[$period]) {
                     $globalUptimes[$period] = [];
                     $globalUptimes[$period]['online'] = 0;
                     $globalUptimes[$period]['offline'] = 0;
@@ -471,8 +507,8 @@ class IndexController extends pm_Controller_Action
         for ($i = 0; $i < $length; $i++) {
 
             // care about all entries that are later then x, but also take the last one that was smaller then x
-            if($monitor->logs[$i]->datetime > $x){
-                if($i - 1 >= 0){
+            if ($monitor->logs[$i]->datetime > $x) {
+                if ($i - 1 >= 0) {
                     $index = $i - 1; // keep the entry before also, there a splitted result will be calculated
                 } else {
                     $index = $i;
@@ -481,7 +517,7 @@ class IndexController extends pm_Controller_Action
             }
         }
 
-        if($index == -1){
+        if ($index == -1) {
             $index = $length - 1;
         }
 
@@ -490,12 +526,12 @@ class IndexController extends pm_Controller_Action
         for($j = $index; $j < $length; $j++){
 
             // calculate the first splitted time and add to offline or online sum
-            if($first == true){
+            if ($first == true) {
                 $delta = $x - $monitor->logs[$j]->datetime;
                 $splitted = $monitor->logs[$j]->duration - $delta;
-                if ($monitor->logs[$j]->type == 1){
+                if ($monitor->logs[$j]->type == 1) {
                     $durationOffline += $splitted;
-                } else if ($monitor->logs[$j]->type == 2){
+                } else if ($monitor->logs[$j]->type == 2) {
                     $durationOnline += $splitted;
                 }
 
@@ -504,9 +540,9 @@ class IndexController extends pm_Controller_Action
             }
 
             // add the rest of the entries
-            if ($monitor->logs[$j]->type == 1){
+            if ($monitor->logs[$j]->type == 1) {
                 $durationOffline += $monitor->logs[$j]->duration;
-            } else if ($monitor->logs[$j]->type == 2){
+            } else if ($monitor->logs[$j]->type == 2) {
                 $durationOnline += $monitor->logs[$j]->duration;
             }
         }

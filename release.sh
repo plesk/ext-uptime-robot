@@ -1,2 +1,2 @@
 #!/bin/bash
-zip -r ext_uptime_robot_0.1.zip htdocs meta.xml plib _meta
+zip -r ext_uptime_robot_v1.0.0-1.zip htdocs meta.xml plib _meta
