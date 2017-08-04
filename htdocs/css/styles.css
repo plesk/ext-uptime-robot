@@ -12,23 +12,23 @@
 }
 
 .uptimeRobotLogo img {
-   max-height: 100px; 
+    max-height: 100px;
 }
 
 .uptimeRobotSetupLeft {
-    width: 50%; 
-    float: left; 
+    width: 50%;
+    float: left;
     text-align: center;
 }
 
 .uptimeRobotSetupRight {
-    width: 50%; 
-    float: right; 
+    width: 50%;
+    float: right;
     text-align: center;
 }
 
 .uptimeRobotSetupInner {
-    width: 400px; 
+    width: 400px;
     margin: 0 auto;
 }
 
@@ -46,7 +46,7 @@
     color: black;
 }
 
-.uptimesEntry .percentage{
+.uptimesEntry .percentage {
     float: right;
     font-weight: bold;
 }
@@ -57,12 +57,12 @@
 }
 
 .graphLeft {
-    width: 60%; 
-    float: left;     
+    width: 60%;
+    float: left;
 }
 
 .infoboxRight {
-    width: 35%; 
+    width: 35%;
     float: left;
 }
 
