@@ -1,0 +1,92 @@
+.center {
+    text-align: center;
+}
+
+.margin {
+    margin-top: 12px;
+}
+
+.uptimeRobotLogo {
+    margin: 15px;
+    margin-bottom: 30px;
+}
+
+.uptimeRobotLogo img {
+   max-height: 100px; 
+}
+
+.uptimeRobotSetupLeft {
+    width: 50%; 
+    float: left; 
+    text-align: center;
+}
+
+.uptimeRobotSetupRight {
+    width: 50%; 
+    float: right; 
+    text-align: center;
+}
+
+.uptimeRobotSetupInner {
+    width: 400px; 
+    margin: 0 auto;
+}
+
+.uptimes {
+    border: 1px solid #4db53c;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    width: 76%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.8em;
+}
+
+.uptimesEntry {
+    color: black;
+}
+
+.uptimesEntry .percentage{
+    float: right;
+    font-weight: bold;
+}
+
+.uptimeRobotLastDaysGraph {
+    width: 100%;
+    height: 450px;
+}
+
+.graphLeft {
+    width: 60%; 
+    float: left;     
+}
+
+.infoboxRight {
+    width: 35%; 
+    float: left;
+}
+
+.event {
+    display: inline-block;
+    width: 1.1em;
+    height: 1.1em;
+    border-radius: 0.55em;
+    vertical-align: middle;
+    margin-right: 0.6em;
+}
+
+.eventOffline {
+    background-color: #F07D7D;
+}
+
+.eventOnline {
+    background-color: #B6F07D;
+}
+
+.eventStarted {
+    background-color: #7DF0F0;
+}
+
+.quick-search-box {
+    display: none !important;
+}

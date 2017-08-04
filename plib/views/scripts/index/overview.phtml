@@ -1,0 +1,129 @@
+<?php echo $this->renderTabs($this->tabs); ?>
+
+<div class="graphLeft">
+    <h3 class="center"><?php echo pm_Locale::lmsg('overviewGraphHeading') ?></h3>
+    <div id="graph" class="uptimeRobotLastDaysGraph"></div>
+    <script>
+        require(['//cdn.plot.ly/plotly-latest.min.js'], function (Plotly) {
+
+            var oneDay = 86400000;
+            var twoDays = oneDay * 2;
+            var fiveDays = oneDay * 5;
+            var tenDays = oneDay * 10;
+            var twentyDays = oneDay * 20;
+
+            var dtick = oneDay;
+            if(<?php echo $this->timespan; ?> > 30){
+                dtick = twoDays;
+            }
+            if(<?php echo $this->timespan; ?> > 60){
+                dtick = fiveDays;
+            }
+            if(<?php echo $this->timespan; ?> >= 180){
+                dtick = tenDays;
+            }
+            if(<?php echo $this->timespan; ?> >= 360){
+                dtick = twentyDays;
+            }
+
+            var data = <?php echo json_encode($this->chartData) ?>;
+
+            var layout = {
+                barmode: 'stack',
+                xaxis: {
+                    title: '<?php echo pm_Locale::lmsg('overviewGraphLast') ?> <?php echo $this->timespan ?> <?php echo pm_Locale::lmsg('overviewGraphDays') ?>',
+                    tickangle: -45,
+                    tickmode: 'linear',
+                    range: [data[0].x[0],  data[0].x[data[0].x.length -1]],
+                    tickfont: {
+                        size: 9,
+                        color: 'black'
+                    },
+                    dtick: dtick,
+                    type: 'date'
+                },
+                yaxis: {
+                    title: '<?php echo pm_Locale::lmsg('overviewGraphOfflineTimes') ?>',
+                    tickmode: 'linear',
+                    range: [<?php echo $this->chartMinRange ?>, 100.5]
+                },
+                margin: {
+                    l: 50,
+                    r: 50,
+                    b: 80,
+                    t: 20
+                }
+            };
+
+            Plotly.newPlot('graph', data, layout,  {displayModeBar: false, scrollZoom: false});
+        });
+    </script>
+</div>
+
+<div class="infoboxRight"> 
+    <h3 class="center"><?php echo pm_Locale::lmsg('overviewGlobalUptime') ?></h3>
+    <div class="c100 p<?php echo round($this->globalUptimePercentage) ?> center green">
+        <span><?php echo $this->globalUptimePercentage ?>%</span>
+        <div class="slice"><div class="bar"></div><div class="fill"></div></div>
+    </div>
+    <p class="center margin">
+        Uptime for all domains within the <strong><?php echo strtolower(pm_Locale::lmsg('overviewGraphLast')) ?> <?php echo $this->timespan ?></strong> <?php echo pm_Locale::lmsg('overviewGraphDays') ?>.
+    </p>
+        
+    <div class="uptimes">
+        <?php foreach($this->monitors as &$monitor){ ?>
+            <div class="uptimesEntry">
+                <a href="<?php echo $monitor->url; ?>" target="_blank"><?php echo $monitor->url; ?></a><span class="percentage"><?php echo $monitor->uptime[$this->timespan*24]; ?>%</span>
+            </div>        
+        <?php } ?>
+    </div>
+</div>
+
+<br style="clear: both"/>
+
+<p class="center">
+    <?php if($this->timespan != 7) { ?>
+        <a href="./?timespan=7"><?php echo pm_Locale::lmsg('overviewTimespan7') ?></a>
+    <?php } else { ?>
+        <strong><?php echo pm_Locale::lmsg('overviewTimespan7'); ?></strong>
+    <?php } ?>
+
+        | 
+
+    <?php if($this->timespan != 30) { ?>
+        <a href="./?timespan=30"><?php echo pm_Locale::lmsg('overviewTimespan30') ?></a>
+    <?php } else { ?>
+        <strong><?php echo pm_Locale::lmsg('overviewTimespan30'); ?></strong>
+    <?php } ?>
+
+        | 
+
+    <?php if($this->timespan !=60) { ?>
+        <a href="./?timespan=60"><?php echo pm_Locale::lmsg('overviewTimespan60') ?></a>
+    <?php } else { ?>
+        <strong><?php echo pm_Locale::lmsg('overviewTimespan60'); ?></strong>
+    <?php } ?>
+
+        | 
+
+    <?php if($this->timespan !=180) { ?>
+        <a href="./?timespan=180"><?php echo pm_Locale::lmsg('overviewTimespan180') ?></a>
+   <?php } else { ?>
+        <strong><?php echo pm_Locale::lmsg('overviewTimespan180'); ?></strong>
+    <?php } ?>
+
+        | 
+
+        <?php if($this->timespan !=360) { ?>
+        <a href="./?timespan=360"><?php echo pm_Locale::lmsg('overviewTimespan360') ?></a>
+    <?php } else { 
+        echo pm_Locale::lmsg('overviewTimespan360');
+    } ?>
+</p>
+
+<h2><?php echo pm_Locale::lmsg('overviewMonitors') ?></h2>
+<p><?php echo $this->renderList($this->monitorsList); ?></p>
+
+<h2><?php echo pm_Locale::lmsg('overviewEvents') ?></h2>
+<p><?php echo $this->renderList($this->eventsList); ?></p>
+

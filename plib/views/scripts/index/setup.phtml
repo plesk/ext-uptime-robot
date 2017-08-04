@@ -1,0 +1,29 @@
+<div class="uptimeRobotLogo">
+  <center>
+    <img src="images/welcome.png"/>
+  </center>
+</div>
+
+<div class="uptimeRobotSetupLeft">
+  <div class="uptimeRobotSetupInner">
+    <h1><?php echo pm_Locale::lmsg('setupNewTo') ?></h1>
+    <p><?php echo pm_Locale::lmsg('setupNewToDescription') ?></p>
+    <p>
+      <a href="https://uptimerobot.com/signUp" target="_blank"><?php echo pm_Locale::lmsg('setupCreateAccount') ?></a>
+    </p>
+  </div>
+</div>
+
+<div class="uptimeRobotSetupRight">
+  <div class="uptimeRobotSetupInner">
+    <h1><?php echo pm_Locale::lmsg('setupHaveAccount') ?></h1>
+    <p>
+      <?php echo pm_Locale::lmsg('setupHaveAccountDescription') ?>
+    </p>
+    <p>
+      <?php echo $this->apikeyForm; ?>
+    </p>
+  </div>
+</div>
+
+<br style="clear: both;"/>
