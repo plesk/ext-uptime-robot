@@ -403,7 +403,8 @@ class IndexController extends pm_Controller_Action
     ///////////////////
     // Global Uptime //
     ///////////////////
-    private function _attachUptimePercentageToMonitors(&$monitors, $timespan){
+    private function _attachUptimePercentageToMonitors(&$monitors, $timespan)
+    {
 
         // 24 hours, 7 days, 30 days, 60 days, 180 days, 360 days
         $perdiods = [24, 24*7, 24*30, 24*60, 24*180, 24*360];
@@ -442,7 +443,8 @@ class IndexController extends pm_Controller_Action
         return round($timespanUptimePercentage,2,PHP_ROUND_HALF_DOWN);
     }
 
-    private function _getOverallUptime(&$monitor, $withinTheLastHours){
+    private function _getOverallUptime(&$monitor, $withinTheLastHours)
+    {
 
         // calculate the timestamp from where the stats will be calculated
         $date = new DateTime();
@@ -515,7 +517,8 @@ class IndexController extends pm_Controller_Action
         ];
     }
 
-    private function _calculateUptimePercentage($durationOnline, $durationOffline){
+    private function _calculateUptimePercentage($durationOnline, $durationOffline)
+    {
         $sum = $durationOffline + $durationOnline;
         $overallUptimePercentage = ($durationOnline / $sum) * 100;
         return $overallUptimePercentage;
