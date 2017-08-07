@@ -2,8 +2,8 @@
 <!-- Copyright 1999-2017. Plesk International GmbH. -->
 <module>
   <id>uptime-robot</id>
-  <name>Uptime-Robot</name>
-  <description>Link and track your server downs with uptime-robot.</description>
+  <name>Uptime Robot</name>
+  <description>Link and track your server downs with Uptime Robot!</description>
   <version>1.0.0</version>
   <release>1</release>
   <category>monitoring</category>
