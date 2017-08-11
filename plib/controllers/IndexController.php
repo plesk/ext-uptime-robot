@@ -1,16 +1,25 @@
 <?php
 // Copyright 1999-2017. Plesk International GmbH.
 
+/**
+ * Class IndexController
+ */
 class IndexController extends pm_Controller_Action
 {
+    private $api_key;
     const DEFAULT_TIMESPAN = 30;
 
+    /**
+     * Initialize controller
+     */
     public function init()
     {
         parent::init();
 
         $this->view->headLink()->appendStylesheet(pm_Context::getBaseUrl().'/css/styles.css');
         $this->view->headLink()->appendStylesheet(pm_Context::getBaseUrl().'/css/circle.css');
+
+        $this->api_key = pm_Settings::get('apikey', '');
 
         $this->view->pageTitle = 'Uptime Robot';
         $this->view->tabs = [
@@ -25,34 +34,35 @@ class IndexController extends pm_Controller_Action
         ];
     }
 
+    /**
+     * Index Action
+     */
     public function indexAction()
     {
-        if (pm_Settings::get('apikey')) {
-            $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount(pm_Settings::get('apikey'));
+        if ($this->api_key) {
+            $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount($this->api_key);
 
             if ($account->stat == 'ok') {
                 $this->_forward('overview');
 
                 return;
             }
-
-            $this->_forward('setup');
-
-            return;
         }
 
         $this->_forward('setup');
     }
 
+    /**
+     * Setup Action
+     */
     public function setupAction()
     {
-        $apiKey = pm_Settings::get('apikey') ? pm_Settings::get('apikey') : '';
         $this->view->apikeyForm = new pm_Form_Simple();
         $this->view->apikeyForm->addElement(
             'text', 'apikey', [
             'label'    => pm_Locale::lmsg('setupApiKeyInputLabel'),
             'required' => true,
-            'value'    => $apiKey
+            'value'    => $this->api_key
         ]);
         $this->view->apikeyForm->addControlButtons(
             [
@@ -61,11 +71,11 @@ class IndexController extends pm_Controller_Action
             ]);
 
         if ($this->getRequest()->isPost() && $this->view->apikeyForm->isValid($this->getRequest()->getPost())) {
-            $apikey = $this->view->apikeyForm->getValue('apikey');
-            pm_Settings::set('apikey', trim($apikey));
+            $api_key = $this->view->apikeyForm->getValue('apikey');
+            pm_Settings::set('apikey', trim($api_key));
 
-            if ($apikey) {
-                $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount($apikey);
+            if ($api_key) {
+                $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount($api_key);
                 if ($account->stat == 'ok') {
                     $this->_status->addMessage('info', pm_Locale::lmsg('setupApiKeySaved'));
                 } else {
@@ -80,14 +90,16 @@ class IndexController extends pm_Controller_Action
         }
     }
 
+    /**
+     * Settings Action
+     */
     public function settingsAction()
     {
-        $apiKey = pm_Settings::get('apikey') ? pm_Settings::get('apikey') : '';
         $this->view->apikeyForm = new pm_Form_Simple();
         $this->view->apikeyForm->addElement(
             'text', 'apikey', [
             'label' => 'API-Key',
-            'value' => $apiKey
+            'value' => $this->api_key
         ]);
         $this->view->apikeyForm->addControlButtons(
             [
@@ -96,11 +108,11 @@ class IndexController extends pm_Controller_Action
             ]);
 
         if ($this->getRequest()->isPost() && $this->view->apikeyForm->isValid($this->getRequest()->getPost())) {
-            $apikey = $this->view->apikeyForm->getValue('apikey');
-            pm_Settings::set('apikey', trim($apikey));
+            $api_key = $this->view->apikeyForm->getValue('apikey');
+            pm_Settings::set('apikey', trim($api_key));
 
-            if ($apikey) {
-                $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount($apikey);
+            if ($api_key) {
+                $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount($api_key);
 
                 if ($account->stat == 'ok') {
                     $this->_status->addMessage('info', pm_Locale::lmsg('setupApiKeySaved'));
@@ -117,7 +129,7 @@ class IndexController extends pm_Controller_Action
             return;
         }
 
-        $account = Modules_UptimeRobot_API::fetchUptimeRobotAccountDetails($apiKey);
+        $account = Modules_UptimeRobot_API::fetchUptimeRobotAccountDetails($this->api_key);
         $this->view->accountForm = new pm_Form_Simple();
         $this->view->accountForm->addElement(
             'text', 'email', [
@@ -157,6 +169,9 @@ class IndexController extends pm_Controller_Action
         ]);
     }
 
+    /**
+     * Overview Action
+     */
     public function overviewAction()
     {
         $timespan = self::DEFAULT_TIMESPAN;
@@ -165,11 +180,11 @@ class IndexController extends pm_Controller_Action
             $timespan = intval($this->getRequest()->getQuery('timespan'));
         }
 
-        $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors(pm_Settings::get('apikey'));
+        $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
         $this->view->timespan = $timespan;
         $this->view->globalUptimePercentage = $this->_attachUptimePercentageToMonitors($monitors, $timespan);
-        $this->view->monitorsList = $this->_getMonitorsList($monitors);
-        $this->view->eventsList = $this->_getEventsList($monitors);
+        $this->view->monitorsList = Modules_UptimeRobot_List_Monitors::getList($monitors, $this->view, $this->_request);
+        $this->view->eventsList = Modules_UptimeRobot_List_Events::getList($monitors, $this->view, $this->_request);
 
         $chartData = $this->_getChartDataFor($monitors, $timespan);
         $this->view->chartData = $chartData['data'];
@@ -178,210 +193,34 @@ class IndexController extends pm_Controller_Action
         $this->view->monitors = $monitors;
     }
 
-
-    ////////////
-    // EVENTS //
-    ////////////
+    /**
+     * Events List Data Action
+     */
     public function eventslistDataAction()
     {
-        $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors(pm_Settings::get('apikey'));
-        $list = $this->_getEventsList($monitors);
+        $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
+        $list = Modules_UptimeRobot_List_Events::getList($monitors, $this->view, $this->_request);
         $this->_helper->json($list->fetchData());
     }
 
-    private function _getEventsList($monitors)
-    {
-        $data = [];
-
-        foreach ($monitors as &$monitor) {
-            foreach ($monitor->logs as &$log) {
-                $data[] = [
-                    'column-1' => $this->_getHTMLByEventType($log->type),
-                    'column-2' => '<a href="'.$monitor->url.'" target="_blank">'.$monitor->url.'</a>',
-                    'column-3' => $this->_getHTMLByDateTime($log->datetime),
-                    'column-4' => $log->reason->detail,
-                    'column-5' => $this->_getHTMLByDuration($log->duration)
-                ];
-            }
-        }
-
-        $sortBy = 'column-3';
-
-        $options = [
-            'pageable'             => false,
-            'defaultItemsPerPage'  => 100,
-            'defaultSortField'     => $sortBy,
-            'defaultSortDirection' => pm_View_List_Simple::SORT_DIR_UP,
-            'searchable'           => false
-        ];
-
-        $eventsList = new pm_View_List_Simple($this->view, $this->_request, $options);
-        $eventsList->setData($data);
-        $eventsList->setColumns(
-            [
-                'column-1' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColEvent'),
-                    'sortable'   => true,
-                    'searchable' => false,
-                    'noEscape'   => true
-                ],
-                'column-2' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColMonitor'),
-                    'sortable'   => true,
-                    'searchable' => false,
-                    'noEscape'   => true
-                ],
-                'column-3' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColDateTime'),
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
-                'column-4' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColReason'),
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
-                'column-5' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColDuration'),
-                    'sortable'   => true,
-                    'searchable' => false
-                ]
-            ]);
-        $eventsList->setDataUrl(array('action' => 'eventslist-data'));
-
-        return $eventsList;
-    }
-
-    private function _getHTMLByEventType($type)
-    {
-        $type = intval($type);
-
-        switch ($type) {
-            case 1:
-                return '<span class="event eventOffline"></span>'.pm_Locale::lmsg('overviewEventOffline');
-            case 2:
-                return '<span class="event eventOnline"></span>'.pm_Locale::lmsg('overviewEventOnline');
-            case 98:
-                return '<span class="event eventStarted"></span>'.pm_Locale::lmsg('overviewEventStarted');
-        }
-
-        return 'Unknown Event Type';
-    }
-
-    private function _getHTMLByDateTime($dateTime)
-    {
-        return date('Y-m-d H:i:s', $dateTime);
-    }
-
-    private function _getHTMLByDuration($durationInSeconds)
-    {
-        $init = $durationInSeconds;
-
-        $hours = floor($init / 3600);
-        $minutes = floor(($init / 60) % 60);
-        $seconds = $init % 60;
-
-        $output = '';
-
-        if ($hours < 10) {
-            $output .= '0';
-        }
-
-        $output .= $hours.'h, ';
-
-        if ($minutes < 10) {
-            $output .= '0';
-        }
-
-        $output .= $minutes.'m';
-
-        return $output;
-    }
-
-
-    //////////////
-    // MONITORS //
-    //////////////
-    private function _getMonitorsList($monitors)
-    {
-        $data = [];
-
-        foreach ($monitors as &$monitor) {
-            $data[] = [
-                'column-1' => $monitor->id,
-                'column-2' => '<a href="'.$monitor->url.'" target="_blank">'.$monitor->url.'</a>',
-                'column-3' => ' ',
-                'column-4' => $monitor->uptime[24].'%',
-                'column-5' => $monitor->uptime[24 * 60].'%',
-                'column-6' => $monitor->uptime[24 * 360].'%'
-            ];
-        }
-
-        $options = [
-            'pageable'            => false,
-            'defaultItemsPerPage' => 100
-        ];
-
-        $monitorsList = new pm_View_List_Simple($this->view, $this->_request, $options);
-        $monitorsList->setData($data);
-        $monitorsList->setColumns(
-            [
-                'column-1' => [
-                    'title'      => 'ID',
-                    'noEscape'   => true,
-                    'searchable' => false
-                ],
-
-                'column-2' => [
-                    'title'      => 'URL',
-                    'noEscape'   => true,
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
-
-                'column-3' => [
-                    'title'      => 'Uptime: ',
-                    'noEscape'   => true,
-                    'sortable'   => false,
-                    'searchable' => false
-                ],
-
-                'column-4' => [
-                    'title'      => 'last 24 '.pm_Locale::lmsg('overviewMonitorsHours'),
-                    'noEscape'   => true,
-                    'searchable' => false,
-                    'sortable'   => false
-                ],
-
-                'column-5' => [
-                    'title'      => 'last 60 '.pm_Locale::lmsg('overviewMonitorsDays'),
-                    'noEscape'   => true,
-                    'searchable' => false,
-                    'sortable'   => false
-                ],
-
-                'column-6' => [
-                    'title'      => 'last 360 '.pm_Locale::lmsg('overviewMonitorsDays'),
-                    'noEscape'   => true,
-                    'searchable' => false,
-                    'sortable'   => false
-                ]
-            ]);
-        $monitorsList->setDataUrl(array('action' => 'monitorslist-data'));
-
-        return $monitorsList;
-    }
-
+    /**
+     * Monitors List Data Action
+     */
     public function monitorslistDataAction()
     {
-        $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors(pm_Settings::get('apikey'));
-        $list = $this->_getMonitorsList($monitors);
+        $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
+        $list = Modules_UptimeRobot_List_Monitors::getList($monitors, $this->view, $this->_request);
         $this->_helper->json($list->fetchData());
     }
 
-    ///////////
-    // Chart //
-    ///////////
+    /**
+     * Crates the chart data
+     *
+     * @param $monitors
+     * @param $timespan
+     *
+     * @return array
+     */
     public function _getChartDataFor($monitors, $timespan)
     {
         $lastXDays = $this->_getLastDays($timespan);
@@ -449,6 +288,43 @@ class IndexController extends pm_Controller_Action
         ];
     }
 
+    /**
+     * Get HTML by duration in seconds
+     *
+     * @param $durationInSeconds
+     *
+     * @return string
+     */
+    private function _getHTMLByDuration($durationInSeconds)
+    {
+        $hours = floor($durationInSeconds / 3600);
+        $minutes = floor(($durationInSeconds / 60) % 60);
+        $seconds = $durationInSeconds % 60;
+
+        $output = '';
+
+        if ($hours < 10) {
+            $output .= '0';
+        }
+
+        $output .= $hours.'h, ';
+
+        if ($minutes < 10) {
+            $output .= '0';
+        }
+
+        $output .= $minutes.'m';
+
+        return $output;
+    }
+
+    /**
+     * Gets the last days for the chart
+     *
+     * @param $daysAmount
+     *
+     * @return array
+     */
     private function _getLastDays($daysAmount)
     {
         $days = array();
@@ -460,10 +336,14 @@ class IndexController extends pm_Controller_Action
         return $days;
     }
 
-
-    ///////////////////
-    // Global Uptime //
-    ///////////////////
+    /**
+     * Creates the global uptime percentage for monitors
+     *
+     * @param $monitors
+     * @param $timespan
+     *
+     * @return float
+     */
     private function _attachUptimePercentageToMonitors(&$monitors, $timespan)
     {
         // 24 hours, 7 days, 30 days, 60 days, 180 days, 360 days
@@ -510,6 +390,14 @@ class IndexController extends pm_Controller_Action
         return round($timespanUptimePercentage, 2, PHP_ROUND_HALF_DOWN);
     }
 
+    /**
+     * Gets the overall uptime value
+     *
+     * @param $monitor
+     * @param $withinTheLastHours
+     *
+     * @return array
+     */
     private function _getOverallUptime(&$monitor, $withinTheLastHours)
     {
         // calculate the timestamp from where the stats will be calculated
@@ -587,6 +475,14 @@ class IndexController extends pm_Controller_Action
         ];
     }
 
+    /**
+     * Calculates the uptime percentage
+     *
+     * @param $durationOnline
+     * @param $durationOffline
+     *
+     * @return float|int
+     */
     private function _calculateUptimePercentage($durationOnline, $durationOffline)
     {
         $sum = $durationOffline + $durationOnline;

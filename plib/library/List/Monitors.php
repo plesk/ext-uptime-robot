@@ -3,6 +3,13 @@
 
 class Modules_UptimeRobot_List_Monitors
 {
+    /**
+     * @param $monitors
+     * @param $view
+     * @param $request
+     *
+     * @return pm_View_List_Simple
+     */
     public static function getList($monitors, $view, $request)
     {
         $data = [];

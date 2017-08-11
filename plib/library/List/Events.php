@@ -3,6 +3,13 @@
 
 class Modules_UptimeRobot_List_Events
 {
+    /**
+     * @param $monitors
+     * @param $view
+     * @param $request
+     *
+     * @return pm_View_List_Simple
+     */
     public static function getList($monitors, $view, $request)
     {
         $data = [];
@@ -67,6 +74,11 @@ class Modules_UptimeRobot_List_Events
         return $eventsList;
     }
 
+    /**
+     * @param $type
+     *
+     * @return string
+     */
     private static function getHumandReadableEventTypeText($type)
     {
         $type = intval($type);
@@ -83,11 +95,21 @@ class Modules_UptimeRobot_List_Events
         return 'Unknown Event Type';
     }
 
+    /**
+     * @param $dateTime
+     *
+     * @return false|string
+     */
     private static function getHumandReadableDateTimeText($dateTime)
     {
         return date('Y-m-d H:i:s', $dateTime);
     }
 
+    /**
+     * @param $durationInSeconds
+     *
+     * @return string
+     */
     public static function getHumandReadableDurationText($durationInSeconds)
     {
         $init = $durationInSeconds;
