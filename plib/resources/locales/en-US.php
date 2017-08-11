@@ -1,5 +1,6 @@
 <?php
 // Copyright 1999-2017. Plesk International GmbH.
+
 $messages = [
     'setupApiKeyInputLabel'       => 'Main API Key',
     'setupApiKeySaveButton'       => 'Save',
