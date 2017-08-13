@@ -209,6 +209,7 @@ class IndexController extends pm_Controller_Action
     public function monitorslistDataAction()
     {
         $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
+        $this->_attachUptimePercentageToMonitors($monitors);
         $list = Modules_UptimeRobot_List_Monitors::getList($monitors, $this->view, $this->_request);
         $this->_helper->json($list->fetchData());
     }
@@ -344,7 +345,7 @@ class IndexController extends pm_Controller_Action
      *
      * @return float
      */
-    private function _attachUptimePercentageToMonitors(&$monitors, $timespan)
+    private function _attachUptimePercentageToMonitors(&$monitors, $timespan = 30)
     {
         // 24 hours, 7 days, 30 days, 60 days, 180 days, 360 days
         $perdiods = [
