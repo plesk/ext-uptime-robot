@@ -6,6 +6,7 @@
  */
 class IndexController extends pm_Controller_Action
 {
+    protected $_accessLevel = ['admin', 'reseller', 'client'];
     private $api_key;
     const DEFAULT_TIMESPAN = 30;
 
