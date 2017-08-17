@@ -1,0 +1,1 @@
+This extension gives you the ability to keep track of the downtimes of your websites or your servers with the help of the uptime robot webservice. In the free version uptime robot can check every 5 minutes up to 50 monitors. To use this extension a registration at https://uptimerobot.com/ is required.
