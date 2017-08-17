@@ -67,7 +67,7 @@
         <div class="slice"><div class="bar"></div><div class="fill"></div></div>
     </div>
     <p class="center margin">
-        <?php echo str_replace("%TIMESPAN%", $this->timespan, pm_Locale::lmsg('overviewGlobalUptimeText')); ?>
+        <?php echo pm_Locale::lmsg('overviewGlobalUptimeText', ['timespan' => $this->timespan]); ?>
     </p>
         
     <div class="uptimes">

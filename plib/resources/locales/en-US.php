@@ -12,7 +12,7 @@ $messages = [
     'setupHaveAccount'            => 'I have an Uptime Robot account',
     'setupHaveAccountDescription' => 'Please insert your Uptime Robot "Main API Key" into the following form. The API key can be found on the <a href="https://uptimerobot.com/dashboard.php#mySettings" target="_blank">Uptime Robot settings page</a> at the bottom, after you logged in to your Uptime Robot account.',
     'overviewTitle'               => 'Overview',
-    'overviewGlobalUptimeText'    => 'Uptime for all domains within the <strong>last %TIMESPAN%</strong> days.',
+    'overviewGlobalUptimeText'    => 'Uptime for all domains within the <strong>last %%timespan%%</strong> days.',
     'overviewMonitors'            => 'Monitors',
     'overviewMonitorID'           => 'ID',
     'overviewMonitorType'         => 'Type',
