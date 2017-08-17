@@ -18,7 +18,7 @@ class Modules_UptimeRobot_List_Events
             foreach ($monitor->logs as &$log) {
                 $data[] = [
                     'column-1' => self::getHumandReadableEventTypeText($log->type),
-                    'column-2' => '<a href="'.$monitor->url.'" target="_blank">'.$monitor->url.'</a>',
+                    'column-2' => Modules_UptimeRobot_List_Monitors::getHumandReadableURL($monitor->type, $monitor->url),
                     'column-3' => self::getHumandReadableDateTimeText($log->datetime),
                     'column-4' => $log->reason->detail,
                     'column-5' => self::getHumandReadableDurationText($log->duration)
