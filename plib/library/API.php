@@ -71,7 +71,7 @@ class Modules_UptimeRobot_API
             return $response->monitors;
         }
 
-        return new stdClass();
+        return array();
     }
 
     /**

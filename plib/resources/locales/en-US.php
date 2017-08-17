@@ -44,6 +44,7 @@ $messages = [
     'overviewMonitorsDays'        => 'days',
     'overviewMonitorsHours'       => 'hours',
     'overviewGlobalUptime'        => 'Global Uptime',
+    'overviewGlobalUptimeNA'      => 'n.a.',
     'overviewTimespan7'           => '7 days',
     'overviewTimespan30'          => '30 days',
     'overviewTimespan60'          => '60 days',

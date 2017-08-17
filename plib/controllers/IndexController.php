@@ -6,7 +6,7 @@
  */
 class IndexController extends pm_Controller_Action
 {
-    protected $_accessLevel = ['admin', 'reseller', 'client'];
+    protected $_accessLevel = ['admin'];
     private $api_key;
     const DEFAULT_TIMESPAN = 30;
 
@@ -249,7 +249,12 @@ class IndexController extends pm_Controller_Action
                 }
             }
 
-            $offlinePercentage = ($duration / (24 * $monitorsLength)) * 100;
+            if($monitorsLength === 0){
+                $offlinePercentage = 0;    
+            } else {
+                $offlinePercentage = ($duration / (24 * $monitorsLength)) * 100;
+            }
+
             $onlinePercentage = 100 - $offlinePercentage;
             $minOnlinePercentage = min($minOnlinePercentage, $onlinePercentage);
             $yOffline[] = $offlinePercentage.'%';
@@ -387,8 +392,11 @@ class IndexController extends pm_Controller_Action
             $monitor->uptime = $uptimeMap;
         }
 
-        $timespanUptimePercentage = $this->_calculateUptimePercentage($globalUptimes[$timespan]['online'], $globalUptimes[$timespan]['offline']);
+        if($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline'] === 0){
+            return false;
+        }
 
+        $timespanUptimePercentage = $this->_calculateUptimePercentage($globalUptimes[$timespan]['online'], $globalUptimes[$timespan]['offline']);
         return round($timespanUptimePercentage, 2, PHP_ROUND_HALF_DOWN);
     }
 
