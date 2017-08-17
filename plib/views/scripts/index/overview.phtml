@@ -67,13 +67,13 @@
         <div class="slice"><div class="bar"></div><div class="fill"></div></div>
     </div>
     <p class="center margin">
-        Uptime for all domains within the <strong><?php echo strtolower(pm_Locale::lmsg('overviewGraphLast')) ?> <?php echo $this->timespan ?></strong> <?php echo pm_Locale::lmsg('overviewGraphDays') ?>.
+        <?php echo str_replace("%TIMESPAN%", $this->timespan, pm_Locale::lmsg('overviewGlobalUptimeText')); ?>
     </p>
         
     <div class="uptimes">
         <?php foreach($this->monitors as &$monitor){ ?>
             <div class="uptimesEntry">
-                <a href="<?php echo $monitor->url; ?>" target="_blank"><?php echo $monitor->url; ?></a><span class="percentage"><?php echo $monitor->uptime[$this->timespan*24]; ?>%</span>
+                <?php echo Modules_UptimeRobot_List_Monitors::getHumandReadableURL($monitor->type, $monitor->url) ?><span class="percentage"><?php echo $monitor->uptime[$this->timespan*24]; ?>%</span>
             </div>        
         <?php } ?>
     </div>
