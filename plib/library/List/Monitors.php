@@ -93,7 +93,7 @@ class Modules_UptimeRobot_List_Monitors
      *
      * @return string
      */
-    private static function getHumandReadableMonitorType($monitorType){
+    private static function getHumandReadableMonitorType($monitorType) {
         switch ($monitorType) {
             case 1:
                 return pm_Locale::lmsg('overviewMonitorTypeHttp');
@@ -114,7 +114,7 @@ class Modules_UptimeRobot_List_Monitors
      *
      * @return string Returns a hyperref or just text depending on the $monitorType.
      */
-    public static function getHumandReadableURL($monitorType, $monitorUrl){
+    public static function getHumandReadableURL($monitorType, $monitorUrl) {
 
         // 3 => Ping
         if ($monitorType === 3) {
@@ -122,7 +122,7 @@ class Modules_UptimeRobot_List_Monitors
         }
 
         // Starts with http or https
-        if(substr($monitorUrl, 0, 7) == 'http://' || substr($monitorUrl, 0, 8) == 'https://'){
+        if (substr($monitorUrl, 0, 7) == 'http://' || substr($monitorUrl, 0, 8) == 'https://') {
             return '<a href="'.$monitorUrl.'" target="_blank">'.$monitorUrl.'</a>';
         }
 

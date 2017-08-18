@@ -87,6 +87,10 @@
     background-color: #7DF0F0;
 }
 
+.eventPaused {
+    background-color: #E0E0E0;
+}
+
 .quick-search-box {
     display: none !important;
 }

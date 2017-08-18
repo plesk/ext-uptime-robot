@@ -14,16 +14,16 @@
                 var twentyDays = oneDay * 20;
 
                 var dtick = oneDay;
-                if(<?php echo $this->timespan; ?> > 30){
+                if (<?php echo $this->timespan; ?> > 30) {
                     dtick = twoDays;
                 }
-                if(<?php echo $this->timespan; ?> > 60){
+                if (<?php echo $this->timespan; ?> > 60) {
                     dtick = fiveDays;
                 }
-                if(<?php echo $this->timespan; ?> >= 180){
+                if (<?php echo $this->timespan; ?> >= 180) {
                     dtick = tenDays;
                 }
-                if(<?php echo $this->timespan; ?> >= 360){
+                if (<?php echo $this->timespan; ?> >= 360) {
                     dtick = twentyDays;
                 }
 
@@ -75,12 +75,12 @@
                 <div class="slice"><div class="bar"></div><div class="fill"></div></div>
             </div>
         <?php } ?>
-        <?php if(count($this->monitors) > 0) { ?>
+        <?php if (count($this->monitors) > 0) { ?>
             <p class="center margin">
                 <?php echo pm_Locale::lmsg('overviewGlobalUptimeText', ['timespan' => $this->timespan]); ?>
             </p>
             <div class="uptimes">
-                <?php foreach($this->monitors as &$monitor){ ?>
+                <?php foreach($this->monitors as &$monitor) { ?>
                     <div class="uptimesEntry">
                         <?php echo Modules_UptimeRobot_List_Monitors::getHumandReadableURL($monitor->type, $monitor->url) ?><span class="percentage"><?php echo $monitor->uptime[$this->timespan*24]; ?>%</span>
                     </div>        
@@ -92,7 +92,7 @@
     <br style="clear: both"/>
 
     <p class="center">
-        <?php if($this->timespan != 7) { ?>
+        <?php if ($this->timespan != 7) { ?>
             <a href="./?timespan=7"><?php echo pm_Locale::lmsg('overviewTimespan7') ?></a>
         <?php } else { ?>
             <strong><?php echo pm_Locale::lmsg('overviewTimespan7'); ?></strong>
@@ -100,7 +100,7 @@
 
             | 
 
-        <?php if($this->timespan != 30) { ?>
+        <?php if ($this->timespan != 30) { ?>
             <a href="./?timespan=30"><?php echo pm_Locale::lmsg('overviewTimespan30') ?></a>
         <?php } else { ?>
             <strong><?php echo pm_Locale::lmsg('overviewTimespan30'); ?></strong>
@@ -108,7 +108,7 @@
 
             | 
 
-        <?php if($this->timespan !=60) { ?>
+        <?php if ($this->timespan !=60) { ?>
             <a href="./?timespan=60"><?php echo pm_Locale::lmsg('overviewTimespan60') ?></a>
         <?php } else { ?>
             <strong><?php echo pm_Locale::lmsg('overviewTimespan60'); ?></strong>
@@ -116,7 +116,7 @@
 
             | 
 
-        <?php if($this->timespan !=180) { ?>
+        <?php if ($this->timespan !=180) { ?>
             <a href="./?timespan=180"><?php echo pm_Locale::lmsg('overviewTimespan180') ?></a>
     <?php } else { ?>
             <strong><?php echo pm_Locale::lmsg('overviewTimespan180'); ?></strong>
@@ -124,7 +124,7 @@
 
             | 
 
-            <?php if($this->timespan !=360) { ?>
+            <?php if ($this->timespan !=360) { ?>
             <a href="./?timespan=360"><?php echo pm_Locale::lmsg('overviewTimespan360') ?></a>
         <?php } else { 
             echo pm_Locale::lmsg('overviewTimespan360');

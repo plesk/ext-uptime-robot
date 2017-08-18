@@ -249,7 +249,7 @@ class IndexController extends pm_Controller_Action
                 }
             }
 
-            if($monitorsLength === 0){
+            if ($monitorsLength === 0) {
                 $offlinePercentage = 0;    
             } else {
                 $offlinePercentage = ($duration / (24 * $monitorsLength)) * 100;
@@ -392,7 +392,7 @@ class IndexController extends pm_Controller_Action
             $monitor->uptime = $uptimeMap;
         }
 
-        if($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline'] === 0){
+        if ($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline'] === 0) {
             return false;
         }
 

@@ -89,10 +89,12 @@ class Modules_UptimeRobot_List_Events
             case 2:
                 return '<span class="event eventOnline"></span>'.pm_Locale::lmsg('overviewEventOnline');
             case 98:
+                return '<span class="event eventPaused"></span>'.pm_Locale::lmsg('overviewEventPaused');
+            case 99:
                 return '<span class="event eventStarted"></span>'.pm_Locale::lmsg('overviewEventStarted');
         }
 
-        return 'Unknown Event Type';
+        return pm_Locale::lmsg('overviewEventUnknown');
     }
 
     /**
