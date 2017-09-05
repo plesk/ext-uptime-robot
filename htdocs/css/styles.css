@@ -66,7 +66,7 @@
     float: left;
 }
 
-.event {
+.event, .monitorStatus {
     display: inline-block;
     width: 1.1em;
     height: 1.1em;
@@ -75,11 +75,15 @@
     margin-right: 0.6em;
 }
 
-.eventOffline {
+.eventOffline, .monitorStatusDown {
     background-color: #F07D7D;
 }
 
-.eventOnline {
+.monitorStatusSeemsDown {
+    background-color: #EFBC7C;
+}
+
+.eventOnline, .monitorStatusUp {
     background-color: #B6F07D;
 }
 
@@ -87,7 +91,7 @@
     background-color: #7DF0F0;
 }
 
-.eventPaused {
+.eventPaused, .monitorStatusPaused, .monitorStatusNotCheckedYet {
     background-color: #E0E0E0;
 }
 

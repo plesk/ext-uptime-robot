@@ -82,7 +82,14 @@
             <div class="uptimes">
                 <?php foreach($this->monitors as &$monitor) { ?>
                     <div class="uptimesEntry">
-                        <?php echo Modules_UptimeRobot_List_Monitors::getHumandReadableURL($monitor->type, $monitor->url) ?><span class="percentage"><?php echo $monitor->uptime[$this->timespan*24]; ?>%</span>
+                        <?php echo Modules_UptimeRobot_List_Monitors::getHumandReadableURL($monitor->type, $monitor->url) ?>
+                        <span class="percentage"><?php 
+                            if($monitor->uptime){
+                                echo $monitor->uptime[$this->timespan*24].'%'; 
+                            } else {
+                                echo pm_Locale::lmsg('overviewMonitorStatusPaused');
+                            }
+                        ?></span>
                     </div>        
                 <?php } ?>
             </div>

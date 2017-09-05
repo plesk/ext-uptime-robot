@@ -367,18 +367,25 @@ class IndexController extends pm_Controller_Action
         $globalUptimes = [];
 
         foreach ($monitors as &$monitor) {
-            $uptimeMap = [];
+            $monitor->uptime = [];
+
+            // Do not check when monitor is paused
+            // 0 = paused; 1 = not checked yet; 2 = up; 8 = seems down; 9 = down
+            if($monitor->status === 0){
+                $monitor->uptime = false;
+                continue;
+            }
 
             foreach ($perdiods as &$period) {
                 $durations = $this->_getOverallUptime($monitor, $period);
 
                 // Init global uptime for period
-                if (!$globalUptimes[$period]) {
+                if (array_key_exists($period, $globalUptimes) == false) {
                     $globalUptimes[$period] = [];
                     $globalUptimes[$period]['online'] = 0;
                     $globalUptimes[$period]['offline'] = 0;
                 }
-
+                
                 // Add to global uptime for each period seperated
                 $globalUptimes[$period]['online'] += $durations['durationOnline'];
                 $globalUptimes[$period]['offline'] += $durations['durationOffline'];
@@ -386,13 +393,11 @@ class IndexController extends pm_Controller_Action
                 // Calculate monitor uptime
                 $uptimePercentage = $this->_calculateUptimePercentage($durations['durationOnline'], $durations['durationOffline']);
                 $uptimePercentage = round($uptimePercentage, 2, PHP_ROUND_HALF_DOWN);
-                $uptimeMap[$period] = $uptimePercentage;
+                $monitor->uptime[$period] = $uptimePercentage;
             }
-
-            $monitor->uptime = $uptimeMap;
         }
 
-        if ($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline'] === 0) {
+        if (($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline']) === 0) {
             return false;
         }
 
@@ -435,6 +440,7 @@ class IndexController extends pm_Controller_Action
         $length = count($monitor->logs);
 
         for ($i = 0; $i < $length; $i++) {
+
             // care about all entries that are later then x, but also take the last one that was smaller then x
             if ($monitor->logs[$i]->datetime > $x) {
                 if ($i - 1 >= 0) {
@@ -495,6 +501,10 @@ class IndexController extends pm_Controller_Action
      */
     private function _calculateUptimePercentage($durationOnline, $durationOffline)
     {
+        if($durationOnline === 0 && $durationOffline === 0){
+            return 100; // 
+        }
+
         $sum = $durationOffline + $durationOnline;
         $overallUptimePercentage = ($durationOnline / $sum) * 100;
 

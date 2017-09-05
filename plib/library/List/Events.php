@@ -29,7 +29,7 @@ class Modules_UptimeRobot_List_Events
         $sortBy = 'column-3';
 
         $options = [
-            'pageable'             => false,
+            'pageable'             => true,
             'defaultItemsPerPage'  => 100,
             'defaultSortField'     => $sortBy,
             'defaultSortDirection' => pm_View_List_Simple::SORT_DIR_UP,
