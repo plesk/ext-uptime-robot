@@ -190,6 +190,7 @@ class IndexController extends pm_Controller_Action
         $chartData = $this->_getChartDataFor($monitors, $timespan);
         $this->view->chartData = $chartData['data'];
         $this->view->chartMinRange = max(0, $chartData['minRange'] - 5);
+        $this->view->chartMaxRange = $chartData['maxRange'];
 
         $this->view->monitors = $monitors;
     }
@@ -234,6 +235,7 @@ class IndexController extends pm_Controller_Action
         $textsOnline = [];
 
         $minOnlinePercentage = 100;
+        $maxOfflinePercentage = 0;
 
         foreach ($lastXDays as $currentDay) {
             $duration = 0;
@@ -257,6 +259,7 @@ class IndexController extends pm_Controller_Action
 
             $onlinePercentage = 100 - $offlinePercentage;
             $minOnlinePercentage = min($minOnlinePercentage, $onlinePercentage);
+            $maxOfflinePercentage = max($maxOfflinePercentage, $offlinePercentage);
             $yOffline[] = $offlinePercentage.'%';
             $yOnline[] = $onlinePercentage.'%';
             $textsOffline[] = $textOffline;
@@ -291,7 +294,8 @@ class IndexController extends pm_Controller_Action
 
         return [
             'data'     => $data,
-            'minRange' => $minOnlinePercentage
+            'minRange' => $minOnlinePercentage,
+            'maxRange' => $maxOfflinePercentage
         ];
     }
 
@@ -385,7 +389,7 @@ class IndexController extends pm_Controller_Action
                     $globalUptimes[$period]['online'] = 0;
                     $globalUptimes[$period]['offline'] = 0;
                 }
-                
+
                 // Add to global uptime for each period seperated
                 $globalUptimes[$period]['online'] += $durations['durationOnline'];
                 $globalUptimes[$period]['offline'] += $durations['durationOffline'];

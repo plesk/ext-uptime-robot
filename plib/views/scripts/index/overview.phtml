@@ -7,27 +7,40 @@
         <script>
             require(['//cdn.plot.ly/plotly-latest.min.js'], function (Plotly) {
 
+                var data = <?php echo json_encode($this->chartData) ?>;
                 var oneDay = 86400000;
                 var twoDays = oneDay * 2;
                 var fiveDays = oneDay * 5;
                 var tenDays = oneDay * 10;
                 var twentyDays = oneDay * 20;
 
-                var dtick = oneDay;
+                // Calculate how many labels are drawn on the x-axis
+                var dtickX = oneDay;
                 if (<?php echo $this->timespan; ?> > 30) {
-                    dtick = twoDays;
+                    dtickX = twoDays;
                 }
                 if (<?php echo $this->timespan; ?> > 60) {
-                    dtick = fiveDays;
+                    dtickX = fiveDays;
                 }
                 if (<?php echo $this->timespan; ?> >= 180) {
-                    dtick = tenDays;
+                    dtickX = tenDays;
                 }
                 if (<?php echo $this->timespan; ?> >= 360) {
-                    dtick = twentyDays;
+                    dtickX = twentyDays;
                 }
 
-                var data = <?php echo json_encode($this->chartData) ?>;
+                // Calculate how many labels are drawn on the y-axis
+                var maxRange = <?php echo $this->chartMaxRange; ?>;
+                var dtickY = 1;
+                if(maxRange > 10){
+                    dtickY = 2;
+                }
+                if(maxRange > 20){
+                    dtickY = 5;
+                }
+                if(maxRange > 40){
+                    dtickY = 10;
+                }
 
                 var layout = {
                     barmode: 'stack',
@@ -35,18 +48,19 @@
                         title: '<?php echo pm_Locale::lmsg('overviewGraphLast') ?> <?php echo $this->timespan ?> <?php echo pm_Locale::lmsg('overviewGraphDays') ?>',
                         tickangle: -45,
                         tickmode: 'linear',
-                        range: [data[0].x[0],  data[0].x[data[0].x.length -1]],
+                        range: [data[0].x[0],  (data[0].x[data[0].x.length -1] + 1)],
                         tickfont: {
                             size: 9,
                             color: 'black'
                         },
-                        dtick: dtick,
+                        dtick: dtickX,
                         type: 'date'
                     },
                     yaxis: {
                         title: '<?php echo pm_Locale::lmsg('overviewGraphOfflineTimes') ?>',
                         tickmode: 'linear',
-                        range: [<?php echo $this->chartMinRange ?>, 100.5]
+                        range: [<?php echo $this->chartMinRange ?>, 100.5],
+                        dtick: dtickY
                     },
                     margin: {
                         l: 50,
