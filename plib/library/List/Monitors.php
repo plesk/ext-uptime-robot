@@ -21,9 +21,9 @@ class Modules_UptimeRobot_List_Monitors
                 'column-3' => self::getHumandReadableMonitorType($monitor->type),
                 'column-4' => self::getHumandReadableURL($monitor->type, $monitor->url),
                 'column-5' => ' ',
-                'column-6' => ($monitor->uptime && $monitor->uptime[24]) ? ($monitor->uptime[24].'%') : '-',
-                'column-7' => ($monitor->uptime && $monitor->uptime[24 * 60]) ? ($monitor->uptime[24 * 60].'%') : '-',
-                'column-8' => ($monitor->uptime && $monitor->uptime[24 * 360]) ? ($monitor->uptime[24 * 360].'%') : '-'
+                'column-6' => ($monitor->uptime && is_int($monitor->uptime[24])) ? ($monitor->uptime[24].'%') : '-',
+                'column-7' => ($monitor->uptime && is_int($monitor->uptime[24 * 60])) ? ($monitor->uptime[24 * 60].'%') : '-',
+                'column-8' => ($monitor->uptime && is_int($monitor->uptime[24 * 360])) ? ($monitor->uptime[24 * 360].'%') : '-'
             ];
         }
 

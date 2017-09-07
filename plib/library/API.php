@@ -108,8 +108,18 @@ class Modules_UptimeRobot_API
             CURLOPT_HTTPHEADER     => array(
                 'cache-control: no-cache',
                 'content-type: application/x-www-form-urlencoded'
-            ),
+            )
         ));
+
+        if (pm_ProductInfo::isWindows()) {
+            $caPath = __DIR__ . '/externals/cacert.pem';
+            $caPath = str_replace('/', DIRECTORY_SEPARATOR, $caPath);
+
+            curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,0);
+            curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,1);
+            curl_setopt($curl,CURLOPT_CAINFO,$caPath);
+            curl_setopt($curl,CURLOPT_CAPATH,$caPath);
+        }
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
