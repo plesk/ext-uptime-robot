@@ -105,11 +105,11 @@ class Modules_UptimeRobot_List_Monitors
         switch ($monitorType) {
             case 1:
                 return pm_Locale::lmsg('overviewMonitorTypeHttp');
-            case 1:
-                return pm_Locale::lmsg('overviewMonitorTypeKeyword');
             case 2:
-                return pm_Locale::lmsg('overviewMonitorTypePing');
+                return pm_Locale::lmsg('overviewMonitorTypeKeyword');
             case 3:
+                return pm_Locale::lmsg('overviewMonitorTypePing');
+            case 4:
                 return pm_Locale::lmsg('overviewMonitorTypePort');
             default:
                 return pm_Locale::lmsg('overviewMonitorTypeUnknown');
