@@ -1,21 +1,29 @@
 <?php
 // Copyright 1999-2017. Plesk International GmbH.
 
-class Modules_UptimeRobot_List_Monitors
+class Modules_UptimeRobot_List_Monitors extends pm_View_List_Simple
 {
-    /**
-     * @param $monitors
-     * @param $view
-     * @param $request
-     *
-     * @return pm_View_List_Simple
-     */
-    public static function getList($monitors, $view, $request)
+    private $monitors;
+
+    public function __construct(Zend_View $view, Zend_Controller_Request_Abstract $request, array $monitors)
+    {
+        $options = [
+            'pageable'            => true,
+            'defaultItemsPerPage' => 100,
+        ];
+        parent::__construct($view, $request, $options);
+
+        $this->monitors = $monitors;
+        $this->_setData($view);
+        $this->_setColumns();
+        $this->setDataUrl(['action' => 'monitorslist-data']);
+    }
+
+    private function _setData($view)
     {
         $data = [];
-
-        foreach ($monitors as &$monitor) {
-            $data[] = [ 
+        foreach ($this->monitors as $monitor) {
+            $data[] = [
                 'column-1' => $monitor->id,
                 'column-2' => self::getHumandReadableMonitorOverallStatus($monitor->status),
                 'column-3' => self::getHumandReadableMonitorType($monitor->type),
@@ -27,73 +35,67 @@ class Modules_UptimeRobot_List_Monitors
             ];
         }
 
-        $options = [
-            'pageable'            => true,
-            'defaultItemsPerPage' => 100
-        ];
+        $this->setData($data);
+    }
 
-        $monitorsList = new pm_View_List_Simple($view, $request, $options);
-        $monitorsList->setData($data);
-        $monitorsList->setColumns(
-            [
-                'column-1' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorID'),
-                    'noEscape'   => true,
-                    'searchable' => false
-                ],
+    private function _setColumns()
+    {
+        $this->setColumns([
+            'column-1' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorID'),
+                'noEscape'   => true,
+                'searchable' => false
+            ],
 
-                'column-2' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorStatus'),
-                    'noEscape'   => true,
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
+            'column-2' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorStatus'),
+                'noEscape'   => true,
+                'sortable'   => true,
+                'searchable' => false
+            ],
 
-                'column-3' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorType'),
-                    'noEscape'   => true,
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
+            'column-3' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorType'),
+                'noEscape'   => true,
+                'sortable'   => true,
+                'searchable' => false
+            ],
 
-                'column-4' => [
-                    'title'      =>  pm_Locale::lmsg('overviewMonitorURL'),
-                    'noEscape'   => true,
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
+            'column-4' => [
+                'title'      =>  pm_Locale::lmsg('overviewMonitorURL'),
+                'noEscape'   => true,
+                'sortable'   => true,
+                'searchable' => false
+            ],
 
-                'column-5' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorUptime'),
-                    'noEscape'   => true,
-                    'sortable'   => false,
-                    'searchable' => false
-                ],
+            'column-5' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorUptime'),
+                'noEscape'   => true,
+                'sortable'   => false,
+                'searchable' => false
+            ],
 
-                'column-6' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorLast24Hours'),
-                    'noEscape'   => true,
-                    'searchable' => false,
-                    'sortable'   => false
-                ],
+            'column-6' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorLast24Hours'),
+                'noEscape'   => true,
+                'searchable' => false,
+                'sortable'   => false
+            ],
 
-                'column-7' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorLast60days'),
-                    'noEscape'   => true,
-                    'searchable' => false,
-                    'sortable'   => false
-                ],
+            'column-7' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorLast60days'),
+                'noEscape'   => true,
+                'searchable' => false,
+                'sortable'   => false
+            ],
 
-                'column-8' => [
-                    'title'      => pm_Locale::lmsg('overviewMonitorLast360days'),
-                    'noEscape'   => true,
-                    'searchable' => false,
-                    'sortable'   => false
-                ]
-            ]);
-        $monitorsList->setDataUrl(array('action' => 'monitorslist-data'));
-
-        return $monitorsList;
+            'column-8' => [
+                'title'      => pm_Locale::lmsg('overviewMonitorLast360days'),
+                'noEscape'   => true,
+                'searchable' => false,
+                'sortable'   => false
+            ]
+        ]);
     }
 
     /**

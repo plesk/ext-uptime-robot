@@ -184,8 +184,8 @@ class IndexController extends pm_Controller_Action
         $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
         $this->view->timespan = $timespan;
         $this->view->globalUptimePercentage = $this->_attachUptimePercentageToMonitors($monitors, $timespan);
-        $this->view->monitorsList = Modules_UptimeRobot_List_Monitors::getList($monitors, $this->view, $this->_request);
-        $this->view->eventsList = Modules_UptimeRobot_List_Events::getList($monitors, $this->view, $this->_request);
+        $this->view->monitorsList = new Modules_UptimeRobot_List_Monitors($this->view, $this->_request, $monitors);
+        $this->view->eventsList = new Modules_UptimeRobot_List_Events($this->view, $this->_request, $monitors);
 
         $chartData = $this->_getChartDataFor($monitors, $timespan);
         $this->view->chartData = $chartData['data'];
@@ -201,7 +201,7 @@ class IndexController extends pm_Controller_Action
     public function eventslistDataAction()
     {
         $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
-        $list = Modules_UptimeRobot_List_Events::getList($monitors, $this->view, $this->_request);
+        $list = new Modules_UptimeRobot_List_Events($this->view, $this->_request, $monitors);
         $this->_helper->json($list->fetchData());
     }
 
@@ -212,7 +212,7 @@ class IndexController extends pm_Controller_Action
     {
         $monitors = Modules_UptimeRobot_API::fetchUptimeMonitors($this->api_key);
         $this->_attachUptimePercentageToMonitors($monitors);
-        $list = Modules_UptimeRobot_List_Monitors::getList($monitors, $this->view, $this->_request);
+        $list = new Modules_UptimeRobot_List_Monitors($this->view, $this->_request, $monitors);
         $this->_helper->json($list->fetchData());
     }
 

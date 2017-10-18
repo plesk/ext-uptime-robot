@@ -1,21 +1,32 @@
 <?php
 // Copyright 1999-2017. Plesk International GmbH.
 
-class Modules_UptimeRobot_List_Events
+class Modules_UptimeRobot_List_Events extends pm_View_List_Simple
 {
-    /**
-     * @param $monitors
-     * @param $view
-     * @param $request
-     *
-     * @return pm_View_List_Simple
-     */
-    public static function getList($monitors, $view, $request)
+    private $monitors;
+
+    public function __construct(Zend_View $view, Zend_Controller_Request_Abstract $request, array $monitors)
+    {
+        $options = [
+            'pageable'             => true,
+            'defaultItemsPerPage'  => 100,
+            'defaultSortField'     => 'column-3',
+            'defaultSortDirection' => pm_View_List_Simple::SORT_DIR_UP,
+            'searchable'           => false
+        ];
+        parent::__construct($view, $request, $options);
+
+        $this->monitors = $monitors;
+        $this->_setData($view);
+        $this->_setColumns();
+        $this->setDataUrl(['action' => 'eventslist-data']);
+    }
+
+    private function _setData($view)
     {
         $data = [];
-
-        foreach ($monitors as &$monitor) {
-            foreach ($monitor->logs as &$log) {
+        foreach ($this->monitors as $monitor) {
+            foreach ($monitor->logs as $log) {
                 $data[] = [
                     'column-1' => self::getHumandReadableEventTypeText($log->type),
                     'column-2' => Modules_UptimeRobot_List_Monitors::getHumandReadableURL($monitor->type, $monitor->url),
@@ -25,49 +36,59 @@ class Modules_UptimeRobot_List_Events
                 ];
             }
         }
+        $this->setData($data);
+    }
 
-        $sortBy = 'column-3';
+    private function _setColumns()
+    {
+        $this->setColumns([
+            'column-1' => [
+                'title'      => pm_Locale::lmsg('overviewEventColEvent'),
+                'sortable'   => true,
+                'searchable' => false,
+                'noEscape'   => true
+            ],
+            'column-2' => [
+                'title'      => pm_Locale::lmsg('overviewEventColMonitor'),
+                'sortable'   => true,
+                'searchable' => false,
+                'noEscape'   => true
+            ],
+            'column-3' => [
+                'title'      => pm_Locale::lmsg('overviewEventColDateTime'),
+                'sortable'   => true,
+                'searchable' => false
+            ],
+            'column-4' => [
+                'title'      => pm_Locale::lmsg('overviewEventColReason'),
+                'sortable'   => true,
+                'searchable' => false
+            ],
+            'column-5' => [
+                'title'      => pm_Locale::lmsg('overviewEventColDuration'),
+                'sortable'   => true,
+                'searchable' => false
+            ]
+        ]);
+    }
 
-        $options = [
-            'pageable'             => true,
-            'defaultItemsPerPage'  => 100,
-            'defaultSortField'     => $sortBy,
-            'defaultSortDirection' => pm_View_List_Simple::SORT_DIR_UP,
-            'searchable'           => false
-        ];
+    /**
+     * @param $monitors
+     * @param $view
+     * @param $request
+     *
+     * @return pm_View_List_Simple
+     */
+    public static function getList($monitors, $view, $request)
+    {
+
+
+
+
 
         $eventsList = new pm_View_List_Simple($view, $request, $options);
         $eventsList->setData($data);
-        $eventsList->setColumns(
-            [
-                'column-1' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColEvent'),
-                    'sortable'   => true,
-                    'searchable' => false,
-                    'noEscape'   => true
-                ],
-                'column-2' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColMonitor'),
-                    'sortable'   => true,
-                    'searchable' => false,
-                    'noEscape'   => true
-                ],
-                'column-3' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColDateTime'),
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
-                'column-4' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColReason'),
-                    'sortable'   => true,
-                    'searchable' => false
-                ],
-                'column-5' => [
-                    'title'      => pm_Locale::lmsg('overviewEventColDuration'),
-                    'sortable'   => true,
-                    'searchable' => false
-                ]
-            ]);
+        $eventsList->setColumns();
 
         $eventsList->setDataUrl(array('action' => 'eventslist-data'));
 
