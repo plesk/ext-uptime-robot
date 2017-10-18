@@ -77,10 +77,13 @@ class IndexController extends pm_Controller_Action
 
             if ($api_key) {
                 $account = Modules_UptimeRobot_API::fetchUptimeRobotAccount($api_key);
-                if ($account->stat == 'ok') {
+                if (isset($account->stat) && $account->stat == 'ok') {
                     $this->_status->addMessage('info', pm_Locale::lmsg('setupApiKeySaved'));
                 } else {
-                    $this->_status->addError(pm_Locale::lmsg('setupApiKeyInvalid').json_encode($account));
+                    $error = isset($account->errorMsg) ? $account->errorMsg : json_encode($account);
+                    $this->_status->addError(pm_Locale::lmsg('setupApiKeyInvalid', [
+                        'error' => $error
+                    ]));
                 }
             }
 

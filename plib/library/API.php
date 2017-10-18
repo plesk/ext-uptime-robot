@@ -126,7 +126,9 @@ class Modules_UptimeRobot_API
         curl_close($curl);
 
         if ($err) {
-            return new stdClass();
+            $result = new stdClass();
+            $result->errorMsg = $err;
+            return $result;
         }
 
         return json_decode($response);
