@@ -404,7 +404,7 @@ class IndexController extends pm_Controller_Action
             }
         }
 
-        if (($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline']) === 0) {
+        if (!isset($globalUptimes[$timespan]) || ($globalUptimes[$timespan]['online'] + $globalUptimes[$timespan]['offline']) === 0) {
             return false;
         }
 
