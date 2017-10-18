@@ -243,11 +243,14 @@ class IndexController extends pm_Controller_Action
         foreach ($lastXDays as $currentDay) {
             $duration = 0;
             $textOffline = '';
-            $textsOnline = '';
+            $textOnline = '';
 
-            foreach ($monitors as &$monitor) {
-                foreach ($monitor->logs as &$log) {
-                    if ($currentDay == date('Y-m-d', $log->datetime) && $log->type == 1) {
+            foreach ($monitors as $monitor) {
+                foreach ($monitor->logs as $log) {
+                    if ($currentDay != date('Y-m-d', $log->datetime)) {
+                        continue;
+                    }
+                    if (1 == $log->type) { // offline
                         $duration += ($log->duration / 60 / 60); //seconds => hours
                         $textOffline .= $monitor->url.': '.($this->_getHTMLByDuration($log->duration)).'<br>';
                     }
@@ -266,7 +269,7 @@ class IndexController extends pm_Controller_Action
             $yOffline[] = $offlinePercentage.'%';
             $yOnline[] = $onlinePercentage.'%';
             $textsOffline[] = $textOffline;
-            $textsOnline[] = $textsOnline;
+            $textsOnline[] = $textOnline;
         }
 
         $data = [];
