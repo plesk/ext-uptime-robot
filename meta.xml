@@ -9,5 +9,5 @@
   <category>monitoring</category>
   <vendor>Plesk</vendor>
   <url>https://www.plesk.com</url>
-  <plesk_min_version>12.5</plesk_min_version>
+  <plesk_min_version>17.0</plesk_min_version>
 </module>
