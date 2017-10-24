@@ -14,6 +14,7 @@ $messages = [
     'overviewTitle'                     => 'Overview',
     'overviewGlobalUptimeText'          => 'Uptime for all domains within the <strong>last %%timespan%%</strong> days.',
     'overviewMonitors'                  => 'Monitors',
+    'overviewMonitorsDescription'       => 'To manage your monitors please visit <a href="https://uptimerobot.com/dashboard#mainDashboard" target="_blank">Uptime Robot site</a>.',
     'overviewMonitorID'                 => 'ID',
     'overviewMonitorType'               => 'Type',
     'overviewMonitorStatus'             => 'Status',
