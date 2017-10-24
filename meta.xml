@@ -8,6 +8,6 @@
   <release>1</release>
   <category>monitoring</category>
   <vendor>Plesk</vendor>
-  <url>https://www.plesk.com</url>
+  <url>https://github.com/plesk/ext-uptime-robot</url>
   <plesk_min_version>17.0</plesk_min_version>
 </module>
