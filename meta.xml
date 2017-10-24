@@ -3,7 +3,7 @@
 <module>
   <id>uptime-robot</id>
   <name>Uptime Robot</name>
-  <description>Link and track your server downs with Uptime Robot!</description>
+  <description>In this free version, uptime robot can check up to 50 monitors every 5 minutes. To use this extension, you must first register at https://uptimerobot.com/.</description>
   <version>1.0.0</version>
   <release>1</release>
   <category>monitoring</category>
